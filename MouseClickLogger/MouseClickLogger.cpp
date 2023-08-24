@@ -38,7 +38,7 @@ std::string BrowseFolder(std::string saved_path)
 	const wchar_t* path_param = wsaved_path.c_str();
 
 	BROWSEINFO bi = { 0 };
-	bi.lpszTitle = (L"Browse for folder...");
+	bi.lpszTitle = (L"Choose folder for saving log file!");
 	bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
 	bi.lpfn = BrowseCallbackProc;
 	bi.lParam = (LPARAM)path_param;
@@ -151,14 +151,14 @@ int main()
 	std::string fpath = BrowseFolder("C:\\"); // TODO: add saved path if possible, or remove feature.
 	fpath += "\\";
 	fpath += fname; // TODO: normalize path!
-	std::cout << "Writing to log file: " << fpath << std::endl;
 	// Open the log file for writing
 	logFile.open(fpath);
 	if (!logFile.is_open()) {
 		std::cerr << "Failed to open log file." << std::endl;
 		return 1;
 	}
-	
+	std::cout << "Writing to log file: " << fpath << std::endl;
+
 
 	// Install the mouse hook
 	mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseHookProc, NULL, 0);
