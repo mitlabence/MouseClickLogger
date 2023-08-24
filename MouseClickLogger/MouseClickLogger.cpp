@@ -70,6 +70,7 @@ std::string BrowseFolder(std::string saved_path)
 
 
 UINT64 getCurrentTimestamp() {
+	// TODO: does this handle correct local date time in DST/non-DST?
 	return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
@@ -105,10 +106,22 @@ LRESULT CALLBACK MouseHookProc(int nCode, WPARAM wParam, LPARAM lParam) {
 		if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN) {
 			UINT64 timestamp = getCurrentTimestamp();
 			
+			std::string clickType;
+			switch (wParam) {
+			case WM_LBUTTONDOWN:
+				clickType = "left_click";
+				break;
+			case WM_RBUTTONDOWN:
+				clickType = "right_click";
+				break;
+			default: // should never be reached
+				clickType = "unknown";
+			}
+
 			std::string datetime = timestampToString(timestamp);
-			std::cout << "clicked at (" << mouseEvent->pt.x << ", " << mouseEvent->pt.y << "), time " << timestamp << ", " << datetime << std::endl;
+			std::cout <<  clickType << ", (x,y): (" << mouseEvent->pt.x << ", " << mouseEvent->pt.y << "), time: " << timestamp << ", datetime: " << datetime << std::endl;
 			// TODO: add left/right click! i.e. format should be: leftclick, (x, y), timestamp, datetime
-			logFile << "click (" << mouseEvent->pt.x << ", " << mouseEvent->pt.y << "), " << timestamp << ", " << datetime << std::endl;
+			logFile << clickType << ", (" << mouseEvent->pt.x << ", " << mouseEvent->pt.y << "), " << timestamp << ", " << datetime << std::endl;
 
 		}
 	}
